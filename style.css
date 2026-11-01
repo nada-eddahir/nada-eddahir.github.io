@@ -1,0 +1,257 @@
+
+/* ---------- 1. Colors and settings ---------- */
+:root {
+  --bg: #eef1ec;          /* page background */
+  --text: #1f2a33;        /* main text */
+  --muted: #5b6670;       /* dates, captions, tool lists */
+  --accent: #2b4acb;      /* links */
+  --line: #cfd6cc;        /* dividing lines, image placeholders */
+
+  /* Piano colors stay the same in light and dark mode, like a real piano. */
+  --ivory: #fbfaf4;
+  --ivory-pressed: #e9e6da;
+  --ebony: #1c1d21;
+
+  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --width: 46rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #151b20;
+    --text: #e4e9e2;
+    --muted: #9aa5ad;
+    --accent: #93a8ff;
+    --line: #2c363d;
+  }
+}
+
+
+/* ---------- 2. Base styles ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Smooth scrolling when a key is clicked, unless the visitor
+   has asked their device to reduce motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0 auto;
+  max-width: var(--width);
+  padding: 4rem 1.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 { line-height: 1.15; margin: 0; }
+p { margin: 0 0 1rem; }
+
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.muted { color: var(--muted); font-size: 1rem; }
+
+img { max-width: 100%; display: block; }
+
+.skip-link { position: absolute; left: -999px; }
+.skip-link:focus {
+  left: 1rem; top: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--text); color: var(--bg);
+}
+
+
+/* ---------- 3. Intro ---------- */
+.name {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 1.5rem;
+}
+
+.tagline { font-size: 1.3rem; max-width: 34rem; }
+
+
+/* ---------- 4. Piano keyboard menu ----------
+   The <nav> is a row of 6 equal columns (CSS Grid).
+   Black keys are positioned on top with position: absolute. */
+.keyboard {
+  position: relative;             /* black keys are placed relative to this box */
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  height: 12rem;
+  margin-top: 2.5rem;
+  border-top: 0.6rem solid var(--ebony);   /* the strip above the keys */
+  border-radius: 0 0 6px 6px;
+}
+
+.key {
+  display: flex;
+  align-items: flex-end;          /* label sits at the bottom of the key */
+  justify-content: center;
+  padding-bottom: 0.9rem;
+  background: var(--ivory);
+  color: var(--ebony);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid #b9b6aa;
+  border-left-width: 0;
+  border-radius: 0 0 6px 6px;
+  box-shadow: inset 0 -6px 0 var(--ivory-pressed);   /* the key's front edge */
+  transition: transform 80ms, box-shadow 80ms;
+}
+
+.key:first-of-type { border-left-width: 1px; }
+
+/* Pressed look: on click, on hover, and while keyboard-focused. */
+.key:hover,
+.key:active,
+.key.is-pressed {
+  background: var(--ivory-pressed);
+  box-shadow: inset 0 -2px 0 #d8d4c6;
+  transform: translateY(2px);
+}
+
+.key:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -6px;
+}
+
+/* Black keys: 60% the width of a white key, centered on the gap
+   between two white keys. --pos comes from the HTML. */
+.black-key {
+  position: absolute;
+  top: 0;
+  left: calc(var(--pos) * (100% / 6));
+  width: calc(100% / 6 * 0.6);
+  height: 58%;
+  transform: translateX(-50%);
+  background: var(--ebony);
+  border-radius: 0 0 4px 4px;
+  box-shadow: inset 0 -5px 0 #3a3c42;
+  pointer-events: none;           /* clicks pass through to the white key */
+}
+
+/* On narrow phones, make the labels smaller so they fit. */
+@media (max-width: 480px) {
+  .keyboard { height: 9.5rem; }
+  .key { font-size: 0.75rem; padding-bottom: 0.7rem; }
+}
+
+/* Keep motion off for visitors who asked for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .key { transition: none; }
+  .key:hover, .key:active, .key.is-pressed { transform: none; }
+}
+
+
+/* ---------- 5. Sections ---------- */
+section {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 1.5rem;      /* small gap above a section after jumping to it */
+}
+
+h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 1.5rem; }
+h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+
+/* ---------- 6. Projects ---------- */
+.project { margin-bottom: 2.5rem; }
+.project:last-child { margin-bottom: 0; }
+.project-links a { margin-right: 1.25rem; }
+
+
+/* ---------- 7. Music ---------- */
+.recording {
+  margin: 0 0 1.75rem;
+}
+
+.recording figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.recording audio { width: 100%; }
+
+/* Keeps an embedded YouTube video at a 16:9 shape at any width. */
+.video {
+  aspect-ratio: 16 / 9;
+  margin-top: 1rem;
+}
+
+.video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 6px;
+}
+
+
+/* ---------- 8. Art gallery ----------
+   auto-fill + minmax makes as many columns as fit:
+   about 3 on a laptop, 2 on a tablet, 1–2 on a phone. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.gallery figure { margin: 0; }
+
+.gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 5;            /* all thumbnails the same shape */
+  object-fit: cover;              /* crop to fill instead of squashing */
+  background: var(--line);        /* grey placeholder until the image loads */
+  border-radius: 3px;
+}
+
+.gallery a:hover img { opacity: 0.9; }
+
+.gallery figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+
+/* ---------- 9. Experience timeline ---------- */
+.timeline { list-style: none; margin: 0; padding: 0; }
+
+.timeline li {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.dates { padding-top: 0.15rem; }
+
+
+/* ---------- 10. Footer ---------- */
+footer { margin-top: 5rem; color: var(--muted); font-size: 0.95rem; }
+
+
+/* ---------- 11. Small screens ---------- */
+@media (max-width: 600px) {
+  body { padding: 2.5rem 1.25rem; font-size: 1.0625rem; }
+  .timeline li { grid-template-columns: 1fr; gap: 0.25rem; }
+}
